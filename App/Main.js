@@ -1,15 +1,21 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-function App() {
+import Header from "./components/Header";
+import HomeGuest from "./components/HomeGuest";
+import Footer from "./components/Footer";
+
+function Main() {
   return (
-    <div>
-      <h3>App Component</h3>
-    </div>
+    <>
+      <Header />
+      <HomeGuest />
+      <Footer />
+    </>
   );
 }
 
-ReactDOM.render(<App />, document.querySelector("#root"));
+ReactDOM.render(<Main />, document.querySelector("#root"));
 
 //now if we save new changes
 //it'll just load new component asynchronously
