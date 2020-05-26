@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Axios from "axios";
 
-function HeaderLoggedOut() {
+function HeaderLoggedOut(props) {
   const [username, setUsername] = useState();
   const [password, setPassword] = useState();
 
@@ -12,7 +12,14 @@ function HeaderLoggedOut() {
         username,
         password,
       });
-      console.log(response.data);
+      if (response.data) {
+        localStorage.setItem("rsmToken", response.data.token);
+        localStorage.setItem("rsmUsername", response.data.username);
+        localStorage.setItem("rsmAvatar", response.data.avatar);
+        props.setIsLoggedIn(true);
+      } else {
+        console.log("Incorrect username/password");
+      }
     } catch (e) {
       console.log("Error occured", e);
     }
