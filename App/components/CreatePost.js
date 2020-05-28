@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import Page from "./Page";
 import Axios from "axios";
 import { withRouter } from "react-router-dom";
+import ExampleContext from "../ExampleContext";
 
 function CreatePost(props) {
   const [title, setTitle] = useState();
   const [body, setBody] = useState();
+  const { addFlashMessage } = useContext(ExampleContext);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -16,7 +18,7 @@ function CreatePost(props) {
         token: localStorage.getItem("rsmToken"),
       });
       console.log("Post created Successfully");
-      props.addFlashMessage("Congrats, you successfully created a new post!");
+      addFlashMessage("Congrats, you successfully created a new post!");
       props.history.push(`/post/${response.data}`);
     } catch (e) {
       console.log(e);
