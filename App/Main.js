@@ -12,21 +12,28 @@ import Terms from "./components/Terms";
 import Home from "./components/Home";
 import CreatePost from "./components/CreatePost";
 import ViewSinglePost from "./components/ViewSinglePost";
+import FlashMessages from "./components/FlashMessages";
 
 function Main() {
   const [isLoggedIn, setIsLoggedIn] = useState(
     Boolean(localStorage.getItem("rsmToken"))
   );
+  const [flashMessages, setFlashMessages] = useState([]);
+
+  function addFlashMessage(msg) {
+    setFlashMessages((prev) => prev.concat(msg));
+  }
 
   return (
     <BrowserRouter>
+      <FlashMessages messages={flashMessages} />
       <Header isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
       <Switch>
         <Route path="/" exact>
           {isLoggedIn ? <Home /> : <HomeGuest />}
         </Route>
         <Route path="/create-post">
-          <CreatePost />
+          <CreatePost addFlashMessage={addFlashMessage} />
         </Route>
         <Route path="/post/:id">
           <ViewSinglePost />

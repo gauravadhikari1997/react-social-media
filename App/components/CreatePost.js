@@ -16,6 +16,7 @@ function CreatePost(props) {
         token: localStorage.getItem("rsmToken"),
       });
       console.log("Post created Successfully");
+      props.addFlashMessage("Congrats, you successfully created a new post!");
       props.history.push(`/post/${response.data}`);
     } catch (e) {
       console.log(e);
