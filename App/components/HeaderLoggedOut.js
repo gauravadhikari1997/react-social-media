@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useContext } from "react";
 import Axios from "axios";
-import ExampleContext from "../ExampleContext";
+import DispatchContext from "../DispatchContext";
 
 function HeaderLoggedOut(props) {
-  const { setIsLoggedIn } = useContext(ExampleContext);
+  const appDispatch = useContext(DispatchContext);
+
   const [username, setUsername] = useState();
   const [password, setPassword] = useState();
 
@@ -15,10 +16,7 @@ function HeaderLoggedOut(props) {
         password,
       });
       if (response.data) {
-        localStorage.setItem("rsmToken", response.data.token);
-        localStorage.setItem("rsmUsername", response.data.username);
-        localStorage.setItem("rsmAvatar", response.data.avatar);
-        setIsLoggedIn(true);
+        appDispatch({ type: "login", data: response.data });
       } else {
         console.log("Incorrect username/password");
       }
