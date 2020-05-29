@@ -1,49 +1,68 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Page from "./Page";
+import { useParams, Link } from "react-router-dom";
+import Axios from "axios";
+import LoadingIcon from "./LoadingIcon";
 
 function ViewSinglePost() {
-  return (
-    <Page title="Single Post">
-      <div className="d-flex justify-content-between">
-        <h2>Example Post Title</h2>
-        <span className="pt-2">
-          <a href="#" className="text-primary mr-2" title="Edit">
-            <i className="fas fa-edit"></i>
-          </a>
-          <a className="delete-post-button text-danger" title="Delete">
-            <i className="fas fa-trash"></i>
-          </a>
-        </span>
-      </div>
+  const [isLoading, setIsLoading] = useState(true);
+  const [post, setPost] = useState([]);
 
-      <p className="text-muted small mb-4">
-        <a href="#">
-          <img
-            className="avatar-tiny"
-            src="https://gravatar.com/avatar/b9408a09298632b5151200f3449434ef?s=128"
-          />
-        </a>
-        Posted by <a href="#">brad</a> on 2/10/2020
-      </p>
+  const { id } = useParams();
+  useEffect(() => {
+    try {
+      async function fetchData() {
+        const response = await Axios.get(`/post/${id}`);
+        setPost(response.data);
+        setIsLoading(false);
+      }
+      fetchData();
+    } catch (e) {
+      console.log("There was some error.", e);
+    }
+  }, []);
 
-      <div className="body-content">
-        <p>
-          Lorem ipsum dolor sit <strong>example</strong> post adipisicing elit.
-          Iure ea at esse, tempore qui possimus soluta impedit natus voluptate,
-          sapiente saepe modi est pariatur. Aut voluptatibus aspernatur fugiat
-          asperiores at.
+  if (isLoading) {
+    return (
+      <Page title="Loading">
+        <LoadingIcon />
+      </Page>
+    );
+  } else {
+    const date = new Date(post.createdDate);
+    const formattedDate = `${
+      date.getMonth() + 1
+    }/${date.getDate()}/${date.getFullYear()}`;
+
+    return (
+      <Page title={post.title}>
+        <div className="d-flex justify-content-between">
+          <h2>{post.title}</h2>
+          <span className="pt-2">
+            <a href="#" className="text-primary mr-2" title="Edit">
+              <i className="fas fa-edit"></i>
+            </a>
+            <a className="delete-post-button text-danger" title="Delete">
+              <i className="fas fa-trash"></i>
+            </a>
+          </span>
+        </div>
+
+        <p className="text-muted small mb-4">
+          <Link to={`/profile/${post.author.username}`}>
+            <img className="avatar-tiny" src={post.author.avatar} />
+          </Link>
+          Posted by{" "}
+          <Link to={`/profile/${post.author.username}`}>
+            {post.author.username}
+          </Link>{" "}
+          on {formattedDate}
         </p>
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae quod
-          asperiores corrupti omnis qui, placeat neque modi, dignissimos, ab
-          exercitationem eligendi culpa explicabo nulla tempora rem? Lorem ipsum
-          dolor sit amet consectetur adipisicing elit. Iure ea at esse, tempore
-          qui possimus soluta impedit natus voluptate, sapiente saepe modi est
-          pariatur. Aut voluptatibus aspernatur fugiat asperiores at.
-        </p>
-      </div>
-    </Page>
-  );
+
+        <div className="body-content">{post.body}</div>
+      </Page>
+    );
+  }
 }
 
 export default ViewSinglePost;
