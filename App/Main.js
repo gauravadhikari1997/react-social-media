@@ -17,6 +17,7 @@ import Home from "./components/Home";
 import CreatePost from "./components/CreatePost";
 import ViewSinglePost from "./components/ViewSinglePost";
 import FlashMessages from "./components/FlashMessages";
+import Profile from "./components/Profile";
 
 function Main() {
   const initialState = {
@@ -66,6 +67,9 @@ function Main() {
           <Switch>
             <Route path="/" exact>
               {state.isLoggedIn ? <Home /> : <HomeGuest />}
+            </Route>
+            <Route path="/profile/:username">
+              <Profile />
             </Route>
             <Route path="/create-post">
               <CreatePost />

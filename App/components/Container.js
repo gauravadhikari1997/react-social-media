@@ -1,7 +1,7 @@
 import React from "react";
 
 function Container(props) {
-  if (props.width) {
+  if (props.wide) {
     return <div className="container py-md-5">{props.children}</div>;
   } else {
     return (
