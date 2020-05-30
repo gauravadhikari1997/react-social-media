@@ -10,13 +10,20 @@ function ProfilePosts() {
   const { username } = useParams();
 
   useEffect(() => {
+    const ourRequest = Axios.CancelToken.source();
+
     try {
       async function fetchData() {
-        const response = await Axios.get(`/profile/${username}/posts`);
+        const response = await Axios.get(`/profile/${username}/posts`, {
+          CancelToken: ourRequest.token,
+        });
         setPosts(response.data);
         setIsLoading(false);
       }
       fetchData();
+      return () => {
+        ourRequest.cancel();
+      };
     } catch (e) {
       console.log("There was some error", e);
     }
