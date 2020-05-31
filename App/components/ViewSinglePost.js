@@ -37,7 +37,7 @@ function ViewSinglePost(props) {
     } catch (e) {
       console.log("There was some error.", e);
     }
-  }, []);
+  }, [id]);
 
   async function deleteHandler() {
     const confirm = window.confirm(
