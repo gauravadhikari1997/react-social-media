@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import Axios from "axios";
 import { useParams, Link } from "react-router-dom";
 import LoadingIcon from "./LoadingIcon";
-import Post from "./Post";
 
-function ProfilePosts() {
+function ProfileTabs(props) {
+  const { count } = props;
   const [isLoading, setIsLoading] = useState(true);
-  const [posts, setPosts] = useState([]);
+  const [users, setUsers] = useState([]);
 
   const { username } = useParams();
 
@@ -15,10 +15,13 @@ function ProfilePosts() {
 
     try {
       async function fetchData() {
-        const response = await Axios.get(`/profile/${username}/posts`, {
-          CancelToken: ourRequest.token,
-        });
-        setPosts(response.data);
+        const response = await Axios.get(
+          `/profile/${username}/${props.action}`,
+          {
+            CancelToken: ourRequest.token,
+          }
+        );
+        setUsers(response.data);
         setIsLoading(false);
       }
       fetchData();
@@ -28,19 +31,27 @@ function ProfilePosts() {
     } catch (e) {
       console.log("There was some error", e);
     }
-  }, [username]);
+  }, [username, count]);
 
   if (isLoading) {
     return <LoadingIcon />;
   } else {
     return (
       <div className="list-group">
-        {posts.map((post) => {
-          return <Post key={post._id} post={post} noAuthor={true} />;
+        {users.map((user) => {
+          return (
+            <Link
+              key={user.username}
+              to={`/profile/${user.username}`}
+              className="list-group-item list-group-item-action"
+            >
+              <img className="avatar-tiny" src={user.avatar} /> {user.username}
+            </Link>
+          );
         })}
       </div>
     );
   }
 }
 
-export default ProfilePosts;
+export default ProfileTabs;

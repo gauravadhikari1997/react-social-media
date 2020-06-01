@@ -3,6 +3,7 @@ import DispatchContext from "../DispatchContext";
 import { useImmer } from "use-immer";
 import Axios from "axios";
 import { Link } from "react-router-dom";
+import Post from "./Post";
 
 function Search() {
   const [state, setState] = useImmer({
@@ -52,14 +53,6 @@ function Search() {
     });
   }
 
-  function getDate(createdDate) {
-    const date = new Date(createdDate);
-    const formattedDate = `${
-      date.getMonth() + 1
-    }/${date.getDate()}/${date.getFullYear()}`;
-    return formattedDate;
-  }
-
   return (
     <div className="search-overlay">
       <div className="search-overlay-top shadow-sm">
@@ -94,20 +87,15 @@ function Search() {
                 {state.results.length > 1 ? "items " : "item "}
                 found)
               </div>
-              {state.results.map((result) => (
-                <Link
-                  onClick={() => appDispatch({ type: "searchClose" })}
-                  key={result._id}
-                  to={`/post/${result._id}`}
-                  className="list-group-item list-group-item-action"
-                >
-                  <img className="avatar-tiny" src={result.author.avatar} />{" "}
-                  <strong>{result.title}</strong>{" "}
-                  <span className="text-muted small">
-                    by {result.author.username} on {getDate(result.createdDate)}{" "}
-                  </span>
-                </Link>
-              ))}
+              {state.results.map((post) => {
+                return (
+                  <Post
+                    onClick={() => appDispatch({ type: "searchClose" })}
+                    post={post}
+                    key={post._id}
+                  />
+                );
+              })}
             </div>
           </div>
         </div>
