@@ -33,7 +33,7 @@ function Chat() {
 
   useEffect(() => {
     chatLog.current.scrollTop = chatLog.current.scrollHeight;
-    if (state.chatMessages && !appState.isChatOpen) {
+    if (state.chatMessages.length && !appState.isChatOpen) {
       appDispatch({ type: "incrementChatCount" });
     }
   }, [state.chatMessages]);
