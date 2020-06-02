@@ -28,7 +28,6 @@ function Home() {
           }
         );
         setState((draft) => {
-          console.log(response.data);
           draft.isLoading = false;
           draft.feed = response.data;
         });
@@ -61,7 +60,7 @@ function Home() {
       {state.feed.length == 0 && (
         <>
           <h2 className="text-center">
-            Hello <strong>brad</strong>, your feed is empty.
+            Hello <strong>{appState.user.username}</strong>, your feed is empty.
           </h2>
           <p className="lead text-muted text-center">
             Your feed displays the latest posts from the people you follow. If
