@@ -15,7 +15,7 @@ const fse = require("fs-extra");
 class RunAfterCompile {
   apply(compiler) {
     compiler.hooks.done.tap("Copy files", function () {
-      fse.copySync("./app/main.css", "./dist/main.css");
+      fse.copySync("./App/main.css", "./dist/main.css");
 
       /*
         If you needed to copy another file or folder
@@ -28,17 +28,17 @@ class RunAfterCompile {
 }
 
 config = {
-  entry: "./app/Main.js",
+  entry: "./App/Main.js",
   output: {
     publicPath: "/",
-    path: path.resolve(__dirname, "app"),
+    path: path.resolve(__dirname, "App"),
     filename: "bundled.js",
   },
   plugins: [
     new Dotenv(),
     new HtmlWebpackPlugin({
       filename: "index.html",
-      template: "app/index-template.html",
+      template: "App/index-template.html",
       alwaysWriteToDisk: true,
     }),
     new HtmlWebpackHarddiskPlugin(),

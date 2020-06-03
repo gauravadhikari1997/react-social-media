@@ -1,11 +1,11 @@
 import React from "react";
 import ReactDOMServer from "react-dom/server";
 import fs from "fs";
-import Footer from "./app/components/Footer";
-import Header from "./app/components/Header";
-import LoadingIcon from "./app/components/LoadingIcon";
+import Footer from "./App/components/Footer";
+import Header from "./App/components/Header";
+import LoadingIcon from "./App/components/LoadingIcon";
 import { StaticRouter as Router } from "react-router-dom";
-import StateContext from "./app/StateContext";
+import StateContext from "./App/StateContext";
 
 function Shell() {
   return (
@@ -56,7 +56,7 @@ const reactHtml = ReactDOMServer.renderToString(<Shell />);
   Call our "html" function which has the skeleton or
   boilerplate HTML, and give it the string that React
   generated for us. Our "html" function will insert
-  the React string inside the #app div. So now we will
+  the React string inside the #App div. So now we will
   have a variable in memory with the exact string we
   want, we just need to save it to a file.
 */
@@ -67,9 +67,9 @@ const overallHtmlString = html(reactHtml);
   saving our generated string into a file named
   index-template.html. Please note that this Node task
   will fail if the directory we told it to live within
-  ("app" in this case) does not already exist.
+  ("App" in this case) does not already exist.
 */
-const fileName = "./app/index-template.html";
+const fileName = "./App/index-template.html";
 const stream = fs.createWriteStream(fileName);
 stream.once("open", () => {
   stream.end(overallHtmlString);
