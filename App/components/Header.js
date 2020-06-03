@@ -15,7 +15,15 @@ function Header(props) {
             RSM
           </Link>
         </h4>
-        {appState.isLoggedIn ? <HeaderLoggedIn /> : <HeaderLoggedOut />}
+        {!props.staticEmpty ? (
+          appState.isLoggedIn ? (
+            <HeaderLoggedIn />
+          ) : (
+            <HeaderLoggedOut />
+          )
+        ) : (
+          ""
+        )}
       </div>
     </header>
   );
