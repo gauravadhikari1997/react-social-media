@@ -6,6 +6,7 @@ import StateContext from "../StateContext";
 import ProfilePosts from "./ProfilePosts";
 import ProfileTabs from "./ProfileTabs";
 import { useImmer } from "use-immer";
+import NotFound from "./NotFound";
 
 function Profile() {
   const appState = useContext(StateContext);
@@ -131,6 +132,10 @@ function Profile() {
     setState((draft) => {
       draft.unfollowRequestCount++;
     });
+  }
+
+  if (!state.profileData) {
+    return <NotFound />;
   }
 
   return (
