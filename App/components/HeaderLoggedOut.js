@@ -39,7 +39,7 @@ function HeaderLoggedOut(props) {
           <input
             onChange={(e) => setUsername(e.target.value)}
             name="username"
-            className="form-control form-control-sm input-dark"
+            className="form-control form-control-sm"
             type="text"
             placeholder="Username"
             autoComplete="off"
@@ -49,7 +49,7 @@ function HeaderLoggedOut(props) {
           <input
             onChange={(e) => setPassword(e.target.value)}
             name="password"
-            className="form-control form-control-sm input-dark"
+            className="form-control form-control-sm"
             type="password"
             placeholder="Password"
           />
