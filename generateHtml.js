@@ -1,11 +1,11 @@
 import React from "react";
 import ReactDOMServer from "react-dom/server";
 import fs from "fs";
-import Footer from "./App/components/Footer";
-import Header from "./App/components/Header";
-import LoadingIcon from "./App/components/LoadingIcon";
+import Footer from "./app/components/Footer";
+import Header from "./app/components/Header";
+import LoadingIcon from "./app/components/LoadingIcon";
 import { StaticRouter as Router } from "react-router-dom";
-import StateContext from "./App/StateContext";
+import StateContext from "./app/StateContext";
 
 function Shell() {
   return (
@@ -69,7 +69,7 @@ const overallHtmlString = html(reactHtml);
   will fail if the directory we told it to live within
   ("app" in this case) does not already exist.
 */
-const fileName = "./App/index-template.html";
+const fileName = "./app/index-template.html";
 const stream = fs.createWriteStream(fileName);
 stream.once("open", () => {
   stream.end(overallHtmlString);
