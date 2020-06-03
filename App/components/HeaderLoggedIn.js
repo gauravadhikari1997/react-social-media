@@ -10,6 +10,10 @@ function HeaderLoggedIn(props) {
 
   function handleSignOut() {
     appDispatch({ type: "logout" });
+    appDispatch({
+      type: "flashMessages",
+      value: "You have successfully logged out",
+    });
   }
   return (
     <div className="flex-row my-3 my-md-0">
