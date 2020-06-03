@@ -1,11 +1,11 @@
 import React from "react";
 import ReactDOMServer from "react-dom/server";
 import fs from "fs";
-import Footer from "./app/components/Footer";
-import Header from "./app/components/Header";
-import LoadingIcon from "./app/components/LoadingIcon";
+import Footer from "./App/components/Footer";
+import Header from "./App/components/Header";
+import LoadingIcon from "./App/components/LoadingIcon";
 import { StaticRouter as Router } from "react-router-dom";
-import StateContext from "./app/StateContext";
+import StateContext from "./App/StateContext";
 
 function Shell() {
   return (
@@ -28,7 +28,7 @@ function html(x) {
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-      <title>OurApp</title>
+      <title>React Social Media</title>
       <link href="https://fonts.googleapis.com/css?family=Public+Sans:300,400,400i,700,700i&display=swap" rel="stylesheet" />
       <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous" />
       <script defer src="https://use.fontawesome.com/releases/v5.5.0/js/all.js" integrity="sha384-GqVMZRt5Gn7tB9D9q7ONtcp4gtHIUEW/yG7h98J7IpE3kpi+srfFyyB/04OV6pG0" crossorigin="anonymous"></script>
@@ -69,7 +69,7 @@ const overallHtmlString = html(reactHtml);
   will fail if the directory we told it to live within
   ("app" in this case) does not already exist.
 */
-const fileName = "./app/index-template.html";
+const fileName = "./App/index-template.html";
 const stream = fs.createWriteStream(fileName);
 stream.once("open", () => {
   stream.end(overallHtmlString);
