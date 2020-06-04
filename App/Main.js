@@ -48,6 +48,11 @@ function Main() {
         return;
       case "logout":
         draft.isLoggedIn = false;
+        draft.user = {
+          username: "",
+          token: "",
+          avatar: "",
+        };
         return;
       case "flashMessages":
         draft.flashMessages.push(action.value);

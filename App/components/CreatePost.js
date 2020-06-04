@@ -19,7 +19,6 @@ function CreatePost(props) {
         body,
         token: appState.user.token,
       });
-      console.log("Post created Successfully");
       appDispatch({
         type: "flashMessages",
         value: "Congrats, you successfully created a new post!",
@@ -29,44 +28,57 @@ function CreatePost(props) {
       console.log(e);
     }
   }
-  return (
-    <Page title="Create Post">
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="post-title" className="text-muted mb-1">
-            <small>Title</small>
-          </label>
-          <input
-            onChange={(e) => setTitle(e.target.value)}
-            autoFocus
-            name="title"
-            id="post-title"
-            className="form-control form-control-lg form-control-title"
-            type="text"
-            placeholder=""
-            autoComplete="off"
-            required
-          />
-        </div>
 
-        <div className="form-group">
-          <label htmlFor="post-body" className="text-muted mb-1 d-block">
-            <small>Body Content</small>
-          </label>
-          <textarea
-            onChange={(e) => setBody(e.target.value)}
-            name="body"
-            id="post-body"
-            className="body-content tall-textarea form-control"
-            type="text"
-            required
-          ></textarea>
-        </div>
+  function noLogin() {
+    appDispatch({
+      type: "flashMessages",
+      value: "You must log in to create post",
+    });
+    props.history.push("/");
+  }
 
-        <button className="btn btn-primary">Save New Post</button>
-      </form>
-    </Page>
-  );
+  if (appState.user.token) {
+    return (
+      <Page title="Create Post">
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="post-title" className="text-muted mb-1">
+              <small>Title</small>
+            </label>
+            <input
+              onChange={(e) => setTitle(e.target.value)}
+              autoFocus
+              name="title"
+              id="post-title"
+              className="form-control form-control-lg form-control-title"
+              type="text"
+              placeholder=""
+              autoComplete="off"
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="post-body" className="text-muted mb-1 d-block">
+              <small>Body Content</small>
+            </label>
+            <textarea
+              onChange={(e) => setBody(e.target.value)}
+              name="body"
+              id="post-body"
+              className="body-content tall-textarea form-control"
+              type="text"
+              required
+            ></textarea>
+          </div>
+
+          <button className="btn btn-primary">Save New Post</button>
+        </form>
+      </Page>
+    );
+  } else {
+    return <>{noLogin()}</>;
+  }
 }
 
 export default withRouter(CreatePost);
