@@ -576,7 +576,6 @@ package.json
   }
   ```
 
-//here npm-run-all is node package, -s to sequentially run scripts
-
-//npm run webpackDev for development
+//here npm-run-all is node package, -s to sequentially run scripts  
+//npm run webpackDev for development  
 //npm run webpackBuild for production -> npm run previewDist to view
