@@ -1,23 +1,31 @@
 # react-social-media
-Social Media App using react
 
-Creating React app from scratch
+## Social Media App using ReactJs
 
+*Creating React app from scratch*
+
+## Takeaways
+```bash
 mkdir my-react-app
 cd my-react-app
 npm init -y
 npm install --save react react-dom
+```
 
-index.html Main.js
+index.html Main.js  
 
-//package are on our computer, so to bundle it to deliver to users
-//and to handle JSX
+
+//package are on our computer, so to bundle it to deliver to users  
+//and to handle JSX  
+```bash
 npm install --save webpack webpack-cli webpack-dev-server
 
 npm install --save @babel/core @babel/preset-env @babel/preset-react babel-loader
+```
 
-//webpack configuration file
-webpack.config.js
+//webpack configuration file  
+webpack.config.js  
+```
 const path = require("path");
 
 module.exports = {
@@ -53,9 +61,11 @@ module.exports = {
     ],
   },
 };
+```
+//now include script tag to include bundled.js file  
 
-//now include script tag to include bundled.js file
-index.html
+index.html  
+```
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
@@ -67,12 +77,16 @@ index.html
     <script src="/bundled.js"></script>
   </body>
 </html>
+```
 
-created components
+created components  
 
-//for routing
+//for routing  
+```bash
 npm install --save react-router-dom
+```
 
+```
 import {BrowserRouter, Switch, Route, Link } from 'react-route-dom';
 
 function Main() {
@@ -112,18 +126,18 @@ function Main() {
 </>
   );
 }
+```
+//using mongodb for database  
+//sign up at mondodb.com and click on Connections  
+//Type database name and collection name  
+//now click on connect>add different IP address  
+//0.0.0.0/0 for all users IP  
+//set admin username and password  
+//Choose a connection method>connect you app  
+//Driver=Node and copy string  
+//register using axios request to mongodb  
 
-//using mongodb for database
-//sign up at mondodb.com and click on Connections
-//Type database name and collection name
-//now click on connect>add different IP address
-//0.0.0.0/0 for all users IP
-//set admin username and password
-//Choose a connection method>connect you app
-//Driver=Node and copy string
-
-
-//register using axios request to mongodb
+```
 async function handleSubmit(e) {
     e.preventDefault();
     try {
@@ -137,8 +151,10 @@ async function handleSubmit(e) {
       console.log(e);
     }
   }
+```
 
-//sign in 
+//sign in
+```
 async function handleSubmit(e) {
     e.preventDefault();
     try {
@@ -158,48 +174,52 @@ async function handleSubmit(e) {
       console.log("Error occured", e);
     }
   }
+```
 
-
-//set up routing, to redirect to new post address
+//set up routing, to redirect to new post address  
+```
 	<Route path="/post/:id">
           <ViewSinglePost />
         </Route>
-
-//then in createPost function
+```
+//then in createPost function  
+```
 import {withRouter} from 'react-router-dom'
 
 props.history.push(`/post/${response.data}`)
-
-//using react context API 
-//for making state globally available
-
+``` 
+//using react context API  
+//for making state globally available  
+```
 create ExampleContext.js
 import {createContext} from 'react';
 const ExampleContext = createContext();
 export default ExampleContext;
-
-//import this context in main file
-//wrap everything inside it
-//pass the states in value
+``` 
+//import this context in main file  
+//wrap everything inside it  
+//pass the states in value  
+```
 <ExampleContext.Provider value={{setIsLoggedIn, addFlashMessage}} >
 ...
 </ExampleContext.Provider>
-
-//using Context in component, CreatePost
+```
+//using Context in component, CreatePost  
+```
 import {useContext} from 'react';
 import ExampleContext from '../ExampleContext';
 
 function CreatePost() {
 const {addFlashMessage} = useContext(ExampleContext);
+```
+//now call it directly as {addFlashMessage} to use  
 
-//now call it directly as {addFlashMessage} to use
-
----------------------------------------------------
-//now to make it further more easier and cleaner
-//for state to be used in different components
-//we will levarage useReducer from react
-// it's mixture(or duo) useContext+useReducer
-
+---------------------------------------------------  
+//now to make it further more easier and cleaner  
+//for state to be used in different components  
+//we will levarage useReducer from react  
+// it's mixture(or duo) useContext+useReducer  
+```
 import {useReducer} from react;
 
 import StateContext from "./StateContext";
@@ -234,21 +254,22 @@ function ourReducer(state, action){
     }
 }
 const [state, dispatch] = useReducer(ourReducer, initialState);
-
-//wrap whole return in 
+```
+//wrap whole return in  
+```
 <StateContext.Provider value={state}>
 <DispatchContext.Provider value={dispatch}>
 ...
 </StateContext.Provider>
 </DispatchContext.Provider>
+```
+//in Header we only need state change  
+//so we'll import StateContext and use state  
 
-//in Header we only need state change
-//so we'll import StateContext and use state
-
-//in HeaderLoggedIn and HeaderLoggedOut and CreatePost
-//we need to dispatch actions like login, logout and //flashmessage so we'll use DispatchContext there
-
-like
+//in HeaderLoggedIn and HeaderLoggedOut and CreatePost  
+//we need to dispatch actions like login, logout and  
+//flashmessage so we'll use DispatchContext there like  
+```
 import {useContext} from 'react';
 
 import DispatchContext from '../DispatchContext';
@@ -261,17 +282,19 @@ function handleSignOut() {
     localStorage.removeItem("rsmUsername");
     localStorage.removeItem("rsmAvatar");
   }
+```
 
-
-//because we cannot mutate state in react
-//we will use immer to levarage immutability
+//because we cannot mutate state in react  
+//we will use immer to levarage immutability  
+```bash
 npm install immer use-immer
-
+```
+```
 import {useImmerReducer} from 'use-immer';
-
-//just rename useReducer to useImmerReducer
-//and in ourReducer function
-
+```
+//just rename useReducer to useImmerReducer  
+//and in ourReducer function  
+```
 function ourReducer(draft, action){
     switch (action.type) {
       case "login":
@@ -285,26 +308,27 @@ function ourReducer(draft, action){
         return;
     }
 }
-
-//to use some dynamic value from URL
-//we levarage useParams from react-router-dom
-
+```
+//to use some dynamic value from URL  
+//we levarage useParams from react-router-dom  
+```
 import {useParams} from 'react-router-dom';
 
 const {username} = useParams();
-
-//we sent this dynnamic var in Route
+```
+//we sent this dynnamic var in Route  
+```
 <Route path='/profile/:username'>
 	<Profile />
 </Route>
+```
 
-
-//when we interact with a component that makes
-//some async request and the user goes away
-//from that component then memoey leak warning
-//will be issue and to fix this
-//we will cancel await request in the useEffect
-
+//when we interact with a component that makes  
+//some async request and the user goes away  
+//from that component then memoey leak warning  
+//will be issue and to fix this  
+//we will cancel await request in the useEffect  
+```
 useEffect(() => {
     const ourRequest = Axios.CancelToken.source();
     try {
@@ -323,11 +347,11 @@ useEffect(() => {
       console.log("There was some error", e);
     }
   }, []);
-
-//react lazy loading is used to exempt some components
-//which're either large in size or take take more time
-//to save up resources
-
+```
+//react lazy loading is used to exempt some components  
+//which're either large in size or take take more time  
+//to save up resources  
+```
 import { Suspense } from React;
 
 const Chat = React.lazy(() => import('./components/Chat'));
@@ -335,12 +359,13 @@ const Chat = React.lazy(() => import('./components/Chat'));
 <Suspense fallback="">
 	<Chat />
 </Suspense>
+```
 
+//for production purposes  
+//building dist copy of our project  
 
-//for production purposes
-//building dist copy of our project
-
-webpack.config.js
+webpack.config.js  
+```
 const currentTask = process.env.npm_lifecycle_event;
 const path = require("path");
 const Dotenv = require("dotenv-webpack");
@@ -428,35 +453,38 @@ if (currentTask == "webpackBuild") {
 }
 
 module.exports = config;
+```
 
+//npm install above required packages  
 
-//npm install above required packages
+.env  
+BACKENDURL = http://localhost:8080  
 
-.env
-BACKENDURL = http://localhost:8080
+change index to index-template  
 
-change index to index-template
-
-previewDist.js
+previewDist.js  
+```
 const express = require("express");
 const path = require("path");
 const app = new express();
 app.use(express.static(path.join(__dirname, "dist")));
 app.get("*", (req, res) => res.sendFile(__dirname + "/dist/index.html"));
 app.listen("4000");
+```
 
-
-package.json
+package.json  
+```
 "scripts": {
     "dev": "webpack-dev-server",
     "webpackBuild": "webpack",
     "previewDist": "node previewDist"
 }
+```
+//for slow connection, we are building static html  
+//to show up as skeleton till bundle.js loads  
 
-//for slow connection, we are building static html
-//to show up as skeleton till bundle.js loads
-
-generateHtml.js
+generateHtml.js  
+```
 import React from "react";
 import ReactDOMServer from "react-dom/server";
 import fs from "fs";
@@ -533,9 +561,10 @@ const stream = fs.createWriteStream(fileName);
 stream.once("open", () => {
   stream.end(overallHtmlString);
 });
+```
 
-
-package.json
+package.json  
+```
 "scripts": {
     "dev": "npm-run-all -s generate webpackDev",
     "webpackDev": "webpack-dev-server",
@@ -545,6 +574,7 @@ package.json
     "previewDist": "node previewDist",
     "test": "echo \"Error: no test specified\" && exit 1"
   }
+  ```
 
 //here npm-run-all is node package, -s to sequentially run scripts
 
