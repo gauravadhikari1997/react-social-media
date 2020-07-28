@@ -2,12 +2,17 @@ import React, { useState, useContext } from "react";
 import Page from "./Page";
 import Axios from "axios";
 import { withRouter } from "react-router-dom";
+
+import { Editor } from "react-draft-wysiwyg";
+import { EditorState } from "draft-js";
+import { stateToHTML } from "draft-js-export-html";
+
 import DispatchContext from "../DispatchContext";
 import StateContext from "../StateContext";
 
 function CreatePost(props) {
   const [title, setTitle] = useState();
-  const [body, setBody] = useState();
+  const [body, setBody] = useState(EditorState.createEmpty());
   const appDispatch = useContext(DispatchContext);
   const appState = useContext(StateContext);
 
@@ -16,7 +21,7 @@ function CreatePost(props) {
     try {
       const response = await Axios.post("/create-post", {
         title,
-        body,
+        body: stateToHTML(body.getCurrentContent()),
         token: appState.user.token,
       });
       appDispatch({
@@ -62,14 +67,21 @@ function CreatePost(props) {
             <label htmlFor="post-body" className="text-muted mb-1 d-block">
               <small>Body Content</small>
             </label>
-            <textarea
-              onChange={(e) => setBody(e.target.value)}
-              name="body"
-              id="post-body"
-              className="body-content tall-textarea form-control"
-              type="text"
-              required
-            ></textarea>
+            <Editor
+              toolbar={{
+                inline: { inDropdown: true },
+                list: { inDropdown: true },
+                textAlign: { inDropdown: true },
+                link: { inDropdown: true },
+              }}
+              editorState={body}
+              wrapperClassName="border"
+              editorClassName=""
+              onEditorStateChange={(body) => {
+                setBody(body);
+                console.log(stateToHTML(body.getCurrentContent()));
+              }}
+            />
           </div>
 
           <button className="btn btn-primary">Save New Post</button>

@@ -6,87 +6,54 @@ import LoadingIcon from "./LoadingIcon";
 import ReactMarkdown from "react-markdown";
 import ReactToolTip from "react-tooltip";
 import { useImmerReducer } from "use-immer";
+
+import { Editor } from "react-draft-wysiwyg";
+import { EditorState, ContentState } from "draft-js";
+import htmlToDraft from "html-to-draftjs";
+import { stateToHTML } from "draft-js-export-html";
+
 import StateContext from "../StateContext";
 import DispatchContext from "../DispatchContext";
 import NotFound from "./NotFound";
 
 function EditPost(props) {
-  const initialState = {
-    title: {
-      value: "",
-      hasError: false,
-      errorMessage: "",
-    },
-    body: {
-      value: "",
-      hasError: false,
-      errorMessage: "",
-    },
-    isFetching: true,
-    isSaving: false,
-    id: useParams().id,
-    sendCount: 0,
-    notFound: false,
-  };
-
-  function ourReducer(draft, action) {
-    switch (action.type) {
-      case "fetchCompleted":
-        draft.title.value = action.value.title;
-        draft.body.value = action.value.body;
-        draft.isFetching = false;
-        return;
-      case "titleUpdate":
-        draft.title.value = action.value;
-        return;
-      case "bodyUpdate":
-        draft.body.value = action.value;
-        return;
-      case "handleSubmit":
-        draft.sendCount++;
-        return;
-      case "savingStarted":
-        draft.isSaving = true;
-        return;
-      case "savingFinished":
-        draft.isSaving = false;
-        return;
-      case "notFound":
-        draft.notFound = true;
-        return;
-    }
-  }
-
-  function handleSubmit(e) {
-    e.preventDefault();
-    dispatch({
-      type: "handleSubmit",
-    });
-  }
-
-  const [state, dispatch] = useImmerReducer(ourReducer, initialState);
   const appState = useContext(StateContext);
   const appDispatch = useContext(DispatchContext);
+  const [title, setTitle] = useState("");
+  const [body, setBody] = useState(EditorState.createEmpty());
+  const [notFound, setNotFound] = useState(false);
+  const [isFetching, setIsFetching] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const id = useParams().id;
 
   useEffect(() => {
     const ourRequest = Axios.CancelToken.source();
 
     try {
       async function fetchData() {
-        const response = await Axios.get(`/post/${state.id}`, {
+        const response = await Axios.get(`/post/${id}`, {
           CancelToken: ourRequest.token,
         });
         if (response.data) {
-          dispatch({ type: "fetchCompleted", value: response.data });
+          const blocksFromHtml = htmlToDraft(response.data.body);
+          const { contentBlocks, entityMap } = blocksFromHtml;
+          const contentState = ContentState.createFromBlockArray(
+            contentBlocks,
+            entityMap
+          );
+          const myeditorState = EditorState.createWithContent(contentState);
+          setBody(myeditorState);
+          setTitle(response.data.title);
+          setIsFetching(false);
           if (appState.user.username != response.data.author.username) {
             appDispatch({
               type: "flashMessages",
               value: "You do not have permission to edit this post!",
             });
-            props.history.push(`/post/${state.id}`);
+            props.history.push(`/post/${id}`);
           }
         } else {
-          dispatch({ type: "notFound" });
+          setNotFound(true);
         }
       }
       fetchData();
@@ -98,41 +65,40 @@ function EditPost(props) {
     }
   }, []);
 
-  useEffect(() => {
-    if (state.sendCount) {
-      dispatch({ type: "savingStarted" });
-      const ourRequest = Axios.CancelToken.source();
-      async function fetchData() {
-        try {
-          const response = await Axios.post(
-            `/post/${state.id}/edit`,
-            {
-              title: state.title.value,
-              body: state.body.value,
-              token: appState.user.token,
-            },
-            {
-              CancelToken: ourRequest.token,
-            }
-          );
-          dispatch({ type: "savingFinished" });
-          appDispatch({ type: "flashMessages", value: "Post is updated!" });
-        } catch (e) {
-          console.log("There was some error.", e);
-        }
+  function handleSubmit(e) {
+    e.preventDefault();
+    const ourRequest = Axios.CancelToken.source();
+    async function fetchData() {
+      try {
+        setIsSaving(true);
+        const response = await Axios.post(
+          `/post/${id}/edit`,
+          {
+            title,
+            body: stateToHTML(body.getCurrentContent()),
+            token: appState.user.token,
+          },
+          {
+            CancelToken: ourRequest.token,
+          }
+        );
+        setIsSaving(false);
+        appDispatch({ type: "flashMessages", value: "Post is updated!" });
+      } catch (e) {
+        console.log("There was some error.", e);
       }
-      fetchData();
-      return () => {
-        ourRequest.cancel();
-      };
     }
-  }, [state.sendCount]);
+    fetchData();
+    return () => {
+      ourRequest.cancel();
+    };
+  }
 
-  if (state.notFound) {
+  if (notFound) {
     return <NotFound />;
   }
 
-  if (state.isFetching) {
+  if (isFetching) {
     return (
       <Page title="Loading">
         <LoadingIcon />
@@ -142,7 +108,7 @@ function EditPost(props) {
 
   return (
     <Page title="Edit Post">
-      <Link to={`/post/${state.id}`}>
+      <Link to={`/post/${id}`}>
         <div className="small font-wight-bold">&laquo; Back to Post</div>
       </Link>
       <form className="mt-3" onSubmit={handleSubmit}>
@@ -151,10 +117,8 @@ function EditPost(props) {
             <small>Title</small>
           </label>
           <input
-            value={state.title.value}
-            onChange={(e) =>
-              dispatch({ type: "titleUpdate", value: e.target.value })
-            }
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
             autoFocus
             name="title"
             id="post-title"
@@ -170,19 +134,21 @@ function EditPost(props) {
           <label htmlFor="post-body" className="text-muted mb-1 d-block">
             <small>Body Content</small>
           </label>
-          <textarea
-            value={state.body.value}
-            onChange={(e) =>
-              dispatch({ type: "bodyUpdate", value: e.target.value })
-            }
-            name="body"
-            id="post-body"
-            className="body-content tall-textarea form-control"
-            type="text"
-            required
-          ></textarea>
+          <Editor
+            toolbar={{
+              inline: { inDropdown: true },
+              list: { inDropdown: true },
+              textAlign: { inDropdown: true },
+              link: { inDropdown: true },
+              history: { inDropdown: true },
+            }}
+            editorState={body}
+            wrapperClassName="border"
+            editorClassName=""
+            onEditorStateChange={(body) => setBody(body)}
+          />
         </div>
-        {state.isSaving ? (
+        {isSaving ? (
           <div className="spinner-border" role="status">
             <span className="sr-only">Saving...</span>
           </div>

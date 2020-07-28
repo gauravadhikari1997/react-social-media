@@ -5,6 +5,7 @@ import Axios from "axios";
 import LoadingIcon from "./LoadingIcon";
 import ReactMarkdown from "react-markdown";
 import ReactToolTip from "react-tooltip";
+
 import NotFound from "./NotFound";
 import StateContext from "../StateContext";
 import DispatchContext from "../DispatchContext";
@@ -114,9 +115,8 @@ function ViewSinglePost(props) {
           </Link>{" "}
           on {formattedDate}
         </p>
-
         <div className="body-content">
-          <ReactMarkdown source={post.body} />
+          <div dangerouslySetInnerHTML={{ __html: post.body }} />
         </div>
       </Page>
     );
